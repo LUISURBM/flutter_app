@@ -812,7 +812,7 @@ class Controller extends ControllerMVC {
 }
 
 
-class Model {
+class Model   {
   static String _logoTitle = "Elab Mobile";
   static String _logoSubTitle = "OnGo Technologies";
   static String _signInMenuButton = "SIGN IN";
