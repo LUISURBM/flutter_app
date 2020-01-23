@@ -22,7 +22,7 @@ class ElabThemes with ChangeNotifier {
       case ThemeKeys.ALT:
         return altTheme;
       default:
-        return myTheme;
+        return altTheme;
     }
   }
 }

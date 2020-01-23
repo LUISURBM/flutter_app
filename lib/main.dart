@@ -611,7 +611,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                             .accentColor, width: 1.0)),
                 prefixIcon: const Icon(
                   Icons.email,
-                  color: Colors.white,
+                  color: Colors.blueAccent,
                 ),
               ),
               obscureText: false,
