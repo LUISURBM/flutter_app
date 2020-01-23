@@ -2,9 +2,8 @@ package com.example.flutter_app
 
 import android.os.Bundle
 
-import androidx.annotation.NonNull;
+import androidx.annotation.NonNull
 import io.flutter.app.FlutterActivity
-import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity: FlutterActivity() {
