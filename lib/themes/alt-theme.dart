@@ -1,14 +1,14 @@
   import 'package:flutter/material.dart';
-  final ThemeData myTheme = ThemeData(
+  final ThemeData altTheme = ThemeData(
     primarySwatch: MaterialColor(4284129484,{50: Color(0xffecf4f9), 100: Color(0xffd8e9f3), 200: Color(0xffb1d2e7), 300: Color(0xff8abcdb), 400: Color(0xff63a5cf), 500: Color(0xff3c8fc3), 600: Color(0xff30729c), 700: Color(0xff245675), 800: Color(0xff18394e), 900: Color(0xff0c1d27)}),
     brightness: Brightness.dark,
     primaryColor: Color( 0xFF143642 ),
     primaryColorBrightness: Brightness.dark,
-    primaryColorLight: Color( 0xFF26667d ),
-    primaryColorDark: Color( 0xFF08161b ),
+    primaryColorLight: Color( 0xFF143642 ),
+    primaryColorDark: Color( 0xFF143642 ),
     accentColor: Colors.white,
     accentColorBrightness: Brightness.dark,
-    canvasColor: Color( 0xfffafafa ),
+    canvasColor: Color( 0xFF143642 ),
     scaffoldBackgroundColor: Color( 0xfffafafa ),
     bottomAppBarColor: Color( 0xffffffff ),
     cardColor: Color( 0xffffffff ),

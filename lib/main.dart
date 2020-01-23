@@ -5,12 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/CustomIcons.dart';
 import 'package:flutter_app/Screens/Profile.dart';
+import 'package:flutter_app/Screens/preference_page.dart';
 import 'package:flutter_app/Widgets/SocialIcons.dart';
-import 'package:flutter_app/doc-theme.dart';
+import 'package:flutter_app/themes/alt-theme.dart';
+import 'package:flutter_app/themes/elab-themes.dart';
+import 'package:flutter_app/themes/doc-theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 bool _signUpActive = false;
 bool _signInActive = true;
@@ -21,7 +26,9 @@ TextEditingController _newEmailController = TextEditingController();
 TextEditingController _newPasswordController = TextEditingController();
 
 
-void main() => runApp(MyApp(post: fetchPost()));
+void main() => runApp( MyApp(post: fetchPost()));
+
+enum MyThemeKeys { SELF, ALT}
 
 Future<Post> fetchPost() async {
   final response =
@@ -62,43 +69,36 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fetch Data Example',
-      theme: myTheme,
-/*      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Fetch Data Example'),
-        ),
-        body: Center(
-          child: FutureBuilder<Post>(
-            future: post,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.data.title);
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
 
-              // Por defecto, muestra un loading spinner
-              return CircularProgressIndicator();
-            },
+    return BlocProvider(
+      builder: (context) => ThemeBloc(),
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: _buildWithTheme,
+      ),
+    );
+  }
+
+  Widget _buildWithTheme(BuildContext context, ThemeState state) {
+    return MaterialApp(
+      title: 'Elab app',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Log in'),
+          ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LogInPage(),
+            ],
           ),
         ),
-      ),*/
-        home: Scaffold(
-            appBar: AppBar(title: Text('User Login Form')),
-            body: Center(
-                child: LogInPage()
-            )
-        )
+      ),
+      theme: state.themeData,
     );
 
-      /*return MaterialApp(
-      title: 'Flutter Demo',
-      theme: myTheme,
-      home: MyHomePage(title: 'Hi Wisdom T. from Flutter Demo Home Page'),
-    );*/
   }
+
 }
 
 class MyHomePage extends StatefulWidget {
@@ -417,8 +417,63 @@ class CustomTextStyle {
 }
 
 
+class CustomTheme extends StatefulWidget {
+  final Widget child;
+  final ThemeKeys initialThemeKey;
+
+  const CustomTheme({
+    Key key,
+    this.initialThemeKey,
+    @required this.child,
+  }) : super(key: key);
+
+  @override
+  CustomThemeState createState() => new CustomThemeState();
+}
+
+class CustomThemeState extends State<CustomTheme> {
+  ThemeData _theme;
+
+  ThemeData get theme => _theme;
+
+  @override
+  void initState() {
+    _theme = ElabThemes.getThemeFromKey(widget.initialThemeKey);
+    super.initState();
+  }
+
+
+
+  void changeTheme(ThemeKeys themeKey) {
+    setState(() {
+      _theme = ElabThemes.getThemeFromKey(themeKey);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(); //nothing here for now!
+  }
+}
+
+class _CustomTheme extends InheritedWidget {
+  final CustomThemeState data;
+
+  _CustomTheme({
+    this.data,
+    Key key,
+    @required Widget child,
+  }) : super(key: key, child: child);
+
+  @override
+  bool updateShouldNotify(_CustomTheme oldWidget) {
+    return true;
+  }
+}
+
 class _LogInPageState extends StateMVC<LogInPage> {
   _LogInPageState() : super(Controller());
+
 
   @override
   Widget build(BuildContext context) {
@@ -810,6 +865,7 @@ class Controller extends ControllerMVC {
     }
   }
 }
+
 
 
 class Model   {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Objects/user.dart';
+import 'package:flutter_app/Screens/preference_page.dart';
 
 class Profile extends StatelessWidget {
   final User user = User();
@@ -9,7 +10,7 @@ class Profile extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Data from logged in user:"),
+          title: Text("Profile :"),
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -18,6 +19,15 @@ class Profile extends StatelessWidget {
               ),
               onPressed: () => Navigator.pop(context),
             ),
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                // Navigate to the PreferencePage
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => PreferencePage(),
+                ));
+              },
+            )
           ],
         ),
         body: Container(
