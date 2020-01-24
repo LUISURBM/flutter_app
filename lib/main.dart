@@ -7,6 +7,7 @@ import 'package:flutter_app/CustomIcons.dart';
 import 'package:flutter_app/Screens/Profile.dart';
 import 'package:flutter_app/Screens/preference_page.dart';
 import 'package:flutter_app/Widgets/SocialIcons.dart';
+import 'package:flutter_app/auth0.dart';
 import 'package:flutter_app/themes/alt-theme.dart';
 import 'package:flutter_app/themes/elab-themes.dart';
 import 'package:flutter_app/themes/doc-theme.dart';
@@ -24,7 +25,8 @@ TextEditingController _emailController = TextEditingController();
 TextEditingController _passwordController = TextEditingController();
 TextEditingController _newEmailController = TextEditingController();
 TextEditingController _newPasswordController = TextEditingController();
-
+final String clientId = 'cBY3NoyadShF1Uj5tCur8o7dNz6EkBhr';
+final String domain = 'dev-qpdshbe4.auth0.com';
 
 void main() => runApp( MyApp(post: fetchPost()));
 
@@ -320,7 +322,6 @@ class LoginUserState extends State {
   }
 }
 
-
 class ProfileScreen extends StatelessWidget {
 
 // Creating String Var to Hold sent Email.
@@ -416,7 +417,6 @@ class CustomTextStyle {
   }
 }
 
-
 class CustomTheme extends StatefulWidget {
   final Widget child;
   final ThemeKeys initialThemeKey;
@@ -473,7 +473,13 @@ class _CustomTheme extends InheritedWidget {
 
 class _LogInPageState extends StateMVC<LogInPage> {
   _LogInPageState() : super(Controller());
+  Auth0 auth;
 
+
+  @override
+  void initState() {
+    auth = Auth0(baseUrl: 'https://$domain/', clientId: clientId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -865,8 +871,6 @@ class Controller extends ControllerMVC {
     }
   }
 }
-
-
 
 class Model   {
   static String _logoTitle = "Elab Mobile";
