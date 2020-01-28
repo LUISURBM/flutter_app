@@ -650,9 +650,11 @@ class _LogInPageState extends StateMVC<LogInPage> {
                         color: Theme
                             .of(context)
                             .accentColor, width: 1.0)),
-                prefixIcon: const Icon(
+                prefixIcon: Icon(
                   Icons.lock,
-                  color: Colors.white,
+                  color: Theme
+                      .of(context)
+                      .accentColor
                 ),
               ),
             ),

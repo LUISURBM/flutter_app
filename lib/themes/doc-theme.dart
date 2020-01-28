@@ -6,7 +6,7 @@
     primaryColorBrightness: Brightness.dark,
     primaryColorLight: Color( 0xFF5aa0cc ),
     primaryColorDark: Color( 0xFF08161b ),
-    accentColor: Colors.white,
+    accentColor: Color( 0xFF5aa0cc ),
     accentColorBrightness: Brightness.dark,
     canvasColor: Color( 0xFF5aa0cc ),
     scaffoldBackgroundColor: Color( 0xfffafafa ),
