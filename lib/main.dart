@@ -35,14 +35,15 @@ enum MyThemeKeys { SELF, ALT}
 Future<Post> fetchPost() async {
   final response =
   await http.get('https://jsonplaceholder.typicode.com/posts/1');
-
+  Post post;
   if (response.statusCode == 200) {
     // Si la llamada al servidor fue exitosa, analiza el JSON
-    return Post.fromJson(json.decode(response.body));
+    post = Post.fromJson(json.decode(response.body));
   } else {
     // Si la llamada no fue exitosa, lanza un error.
     throw Exception('Failed to load post');
   }
+  return post;
 }
 
 class Post {
@@ -50,6 +51,9 @@ class Post {
   final int id;
   final String title;
   final String body;
+  String email;
+  String token;
+
 
   Post({this.userId, this.id, this.title, this.body});
 
@@ -375,45 +379,35 @@ class CustomTextStyle {
     return Theme
         .of(context)
         .textTheme
-        .title
-        .copyWith(
-        fontSize: 18.0, fontWeight: FontWeight.normal, color: Colors.white);
+        .title;
   }
 
   static TextStyle title(BuildContext context) {
     return Theme
         .of(context)
         .textTheme
-        .title
-        .copyWith(
-        fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white);
+        .title;
   }
 
   static TextStyle subTitle(BuildContext context) {
     return Theme
         .of(context)
         .textTheme
-        .title
-        .copyWith(
-        fontSize: 14, fontWeight: FontWeight.normal, color: Colors.white);
+        .title;
   }
 
   static TextStyle button(BuildContext context) {
     return Theme
         .of(context)
         .textTheme
-        .title
-        .copyWith(
-        fontSize: 20, fontWeight: FontWeight.normal, color: Colors.white);
+        .title;
   }
 
   static TextStyle body(BuildContext context) {
     return Theme
         .of(context)
         .textTheme
-        .title
-        .copyWith(
-        fontSize: 14, fontWeight: FontWeight.normal, color: Colors.white);
+        .title;
   }
 }
 
@@ -456,21 +450,6 @@ class CustomThemeState extends State<CustomTheme> {
   }
 }
 
-class _CustomTheme extends InheritedWidget {
-  final CustomThemeState data;
-
-  _CustomTheme({
-    this.data,
-    Key key,
-    @required Widget child,
-  }) : super(key: key, child: child);
-
-  @override
-  bool updateShouldNotify(_CustomTheme oldWidget) {
-    return true;
-  }
-}
-
 class _LogInPageState extends StateMVC<LogInPage> {
   _LogInPageState() : super(Controller());
   Auth0 auth;
@@ -502,7 +481,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                 children: <Widget>[
                   Text(
                       Controller.displayLogoTitle,
-                      style: CustomTextStyle.title(context)
+                      style: CustomTextStyle.title(context),
                   ),
                   Text(
                     Controller.displayLogoSubTitle,
@@ -615,9 +594,11 @@ class _LogInPageState extends StateMVC<LogInPage> {
                         color: Theme
                             .of(context)
                             .accentColor, width: 1.0)),
-                prefixIcon: const Icon(
+                prefixIcon: Icon(
                   Icons.email,
-                  color: Colors.blueAccent,
+                  color: Theme
+                      .of(context)
+                      .accentColor,
                 ),
               ),
               obscureText: false,
@@ -684,24 +665,43 @@ class _LogInPageState extends StateMVC<LogInPage> {
           height: ScreenUtil.getInstance().setHeight(30),
         ),
         Container(
-          child: Padding(
-              padding: EdgeInsets.only(),
-              child: RaisedButton(
-                child: Row(
-                  children: <Widget>[
-                    SocialIcon(iconData: CustomIcons.facebook),
-                    Expanded(
-                      child: Text(
-                        Controller.displaySignInFacebookButton,
-                        textAlign: TextAlign.center,
-                        style: CustomTextStyle.button(context),
-                      ),
-                    )
-                  ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  child: Row(
+                    children: <Widget>[
+                      SocialIcon(iconData: CustomIcons.facebook),
+                      Expanded(
+                        child: Text(
+                          Controller.displaySignInAuth0Button,
+                          textAlign: TextAlign.center,
+                          style: CustomTextStyle.button(context),
+                        ),
+                      )
+                    ],
+                  ),
+                  color: Color(0xffFFFB00),
+                  onPressed: () => Controller.tryToLogInUserViaAuth(this.auth, context),
                 ),
-                color: Color(0xFF3C5A99),
-                onPressed: () => Controller.tryToLogInUserViaFacebook(context),
-              )),
+                RaisedButton(
+                  child: Row(
+                    children: <Widget>[
+                      SocialIcon(iconData: CustomIcons.facebook),
+                      Expanded(
+                        child: Text(
+                          Controller.displaySignInFacebookButton,
+                          textAlign: TextAlign.center,
+                          style: CustomTextStyle.button(context),
+                        ),
+                      )
+                    ],
+                  ),
+                  color: Color(0xFF3C5A99),
+                  onPressed: () => Controller.tryToLogInUserViaFacebook(this.auth, context),
+                )
+              ],
+          ),
         ),
       ],
     );
@@ -797,7 +797,6 @@ class _LogInPageState extends StateMVC<LogInPage> {
 
 class LogInPage extends StatefulWidget {
   LogInPage({Key key}) : super(key: key);
-
   @protected
   @override
   State<StatefulWidget> createState() => _LogInPageState();
@@ -837,6 +836,9 @@ class Controller extends ControllerMVC {
 
   static String get displaySignUpButtonTest => Model._signUpButtonText;
 
+  static String get displaySignInAuth0Button =>
+      Model._signInWithAuth0ButtonText;
+
   static String get displaySignInEmailButton =>
       Model._signInWithEmailButtonText;
 
@@ -852,15 +854,26 @@ class Controller extends ControllerMVC {
 
   static void changeToSignIn() => Model._changeToSignIn();
 
-  static Future<bool> signInWithFacebook(context) =>
-      Model._signInWithFacebook(context);
+  static Future<Post> signInWithAuth(Auth0 auth, context) =>
+      Model._signInWithAuth(auth, context);
+
+  static Future<Post> signInWithFacebook(Auth0 auth, context) =>
+      Model._signInWithFacebook(auth, context);
 
 
-  static Future navigateToProfile(context) => Model._navigateToProfile(context);
+  static Future navigateToProfile(context, post) => Model._navigateToProfile(context, post);
 
-  static Future tryToLogInUserViaFacebook(context) async {
-    if (await signInWithFacebook(context) == true) {
-      navigateToProfile(context);
+  static Future tryToLogInUserViaAuth(Auth0 auth, context) async {
+    Post post = await signInWithAuth(auth, context);
+    if (post != null) {
+      navigateToProfile(context, post);
+    }
+  }
+
+  static Future tryToLogInUserViaFacebook(Auth0 auth, context) async {
+    Post post = await signInWithFacebook(auth, context);
+    if (post != null) {
+      navigateToProfile(context, post);
     }
   }
 
@@ -884,6 +897,7 @@ class Model   {
   static String _hintTextNewEmail = "Enter your Email";
   static String _hintTextNewPassword = "Enter a Password";
   static String _signUpButtonText = "SIGN UP";
+  static String _signInWithAuth0ButtonText = "Sign in with Auth0";
   static String _signInWithEmailButtonText = "Sign in with Email";
   static String _signInWithFacebookButtonText = "Sign in with Facebook";
   static String _alternativeLogInSeparatorText = "or";
@@ -900,19 +914,44 @@ class Model   {
     _signInActive = true;
   }
 
-  static Future<bool> _signInWithFacebook(context) async {
-
-    if (1 != null) {
-      print('Successfully signed in with Facebook. ');
-      return true;
-    } else {
-      print('Failed to sign in with Facebook. ');
-      return false;
+  static Future<Post> _signInWithAuth(Auth0 auth, context) async {
+    Post post = new Post();
+    try {
+      var response = await auth.auth.passwordRealm({
+        'username': 'luiz-felipe16@hotmail.com',
+        'password': '20auth.0129.',
+        'realm': 'Username-Password-Authentication'
+      });
+      post.email = 'luiz-felipe16@hotmail.com';
+      post.token = response['access_token'];
+    } catch (e) {
+      print(e);
     }
   }
 
-  static Future _navigateToProfile(context) async {
+  static Future<Post> _signInWithFacebook(Auth0 auth, context) async {
+    Post post = await fetchPost();
+    try {
+      var response = await auth.auth.passwordRealm({
+        'username': 'luiz-felipe16@hotmail.com',
+        'password': '20auth.0129.',
+        'realm': 'Username-Password-Authentication'
+      });
+      post.token = response['access_token'];
+    } catch (e) {
+      print(e);
+    }
+    if (post != null) {
+      print('Successfully signed in with Facebook. ');
+      return post;
+    } else {
+      print('Failed to sign in with Facebook. ');
+      return null;
+    }
+  }
+
+  static Future _navigateToProfile(context, post) async {
     await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Profile()));
+        context, MaterialPageRoute(builder: (context) => Profile(post: post)));
   }
 }

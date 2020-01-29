@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Objects/user.dart';
 import 'package:flutter_app/Screens/preference_page.dart';
+import 'package:flutter_app/main.dart';
 
 class Profile extends StatelessWidget {
   final User user = User();
+  final Post post;
+
+  Profile({Key key, @required this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme
+              .of(context)
+              .accentColor,
           title: Text("Profile :"),
           actions: <Widget>[
             IconButton(
@@ -36,9 +43,11 @@ class Profile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text("Name: " + user.name.toString()),
-                  Text("Email: " + user.email.toString()),
+                  Text("Email: " + post.email.toString()),
                   Text("Facebook ID: " + user.fbID.toString()),
-                  Text("Picture url: "+ user.url.toString())
+                  Text("Picture url: "+ user.url.toString()),
+                  Text("Post title: "+ post.title.toString()),
+                  Text("Post token: "+ post.token.toString()),
                 ],
               )
               //child: _displayUserData(user.profileData),
