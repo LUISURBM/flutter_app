@@ -454,7 +454,6 @@ class _LogInPageState extends StateMVC<LogInPage> {
   _LogInPageState() : super(Controller());
   Auth0 auth;
 
-
   @override
   void initState() {
     auth = Auth0(baseUrl: 'https://$domain/', clientId: clientId);
@@ -665,42 +664,44 @@ class _LogInPageState extends StateMVC<LogInPage> {
           height: ScreenUtil.getInstance().setHeight(30),
         ),
         Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                  child: Row(
-                    children: <Widget>[
-                      SocialIcon(iconData: CustomIcons.facebook),
-                      Expanded(
-                        child: Text(
-                          Controller.displaySignInAuth0Button,
-                          textAlign: TextAlign.center,
-                          style: CustomTextStyle.button(context),
-                        ),
-                      )
-                    ],
+          child: Padding(
+            padding: EdgeInsets.only(),
+            child: RaisedButton(
+              child: Row(
+                children: <Widget>[
+                  SocialIcon(iconData: CustomIcons.facebook),
+                  Expanded(
+                    child: Text(
+                      Controller.displaySignInAuth0Button,
+                      textAlign: TextAlign.center,
+                      style: CustomTextStyle.button(context),
+                    ),
+                  )
+                ],
+              ),
+              color: Color(0xffFFFB00),
+              onPressed: () => Controller.tryToLogInUserViaAuth(this.auth, context, _emailController, _passwordController),
+            ),
+          ),
+        ),
+        Container(
+          child: Padding(
+            padding: EdgeInsets.only(),
+            child: RaisedButton(
+              child: Row(
+                children: <Widget>[
+                SocialIcon(iconData: CustomIcons.facebook),
+                Expanded(
+                  child: Text(
+                    Controller.displaySignInFacebookButton,
+                    textAlign: TextAlign.center,
+                    style: CustomTextStyle.button(context),
                   ),
-                  color: Color(0xffFFFB00),
-                  onPressed: () => Controller.tryToLogInUserViaAuth(this.auth, context),
-                ),
-                RaisedButton(
-                  child: Row(
-                    children: <Widget>[
-                      SocialIcon(iconData: CustomIcons.facebook),
-                      Expanded(
-                        child: Text(
-                          Controller.displaySignInFacebookButton,
-                          textAlign: TextAlign.center,
-                          style: CustomTextStyle.button(context),
-                        ),
-                      )
-                    ],
-                  ),
-                  color: Color(0xFF3C5A99),
-                  onPressed: () => Controller.tryToLogInUserViaFacebook(this.auth, context),
-                )
-              ],
+                )],
+              ),
+              color: Color(0xFF3C5A99),
+              onPressed: () => Controller.tryToLogInUserViaFacebook(this.auth, context),
+            )
           ),
         ),
       ],
@@ -854,8 +855,8 @@ class Controller extends ControllerMVC {
 
   static void changeToSignIn() => Model._changeToSignIn();
 
-  static Future<Post> signInWithAuth(Auth0 auth, context) =>
-      Model._signInWithAuth(auth, context);
+  static Future<Post> signInWithAuth(Auth0 auth, context, email, password) =>
+      Model._signInWithAuth(auth, context, email, password);
 
   static Future<Post> signInWithFacebook(Auth0 auth, context) =>
       Model._signInWithFacebook(auth, context);
@@ -863,8 +864,8 @@ class Controller extends ControllerMVC {
 
   static Future navigateToProfile(context, post) => Model._navigateToProfile(context, post);
 
-  static Future tryToLogInUserViaAuth(Auth0 auth, context) async {
-    Post post = await signInWithAuth(auth, context);
+  static Future tryToLogInUserViaAuth(Auth0 auth, context, email, password) async {
+    Post post = await signInWithAuth(auth, context, email, password);
     if (post != null) {
       navigateToProfile(context, post);
     }
@@ -914,12 +915,13 @@ class Model   {
     _signInActive = true;
   }
 
-  static Future<Post> _signInWithAuth(Auth0 auth, context) async {
+  static Future<Post> _signInWithAuth(Auth0 auth, context, TextEditingController email,
+      TextEditingController password) async {
     Post post = new Post();
     try {
       var response = await auth.auth.passwordRealm({
-        'username': 'luiz-felipe16@hotmail.com',
-        'password': '20auth.0129.',
+        'username': email.text.trim().toLowerCase(),
+        'password': password.text,
         'realm': 'Username-Password-Authentication'
       });
       post.email = 'luiz-felipe16@hotmail.com';
@@ -927,6 +929,7 @@ class Model   {
     } catch (e) {
       print(e);
     }
+    return post;
   }
 
   static Future<Post> _signInWithFacebook(Auth0 auth, context) async {
