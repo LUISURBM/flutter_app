@@ -30,6 +30,14 @@ dependencies:
     git: https://github.com/lequanghiep74/flutter_facebook_login
   flutter_bloc: ^0.20.0
   equatable: ^0.4.0
+  # async package to add additional Cancellable operations
+  async: ^2.0.8
+  # get it
+  get_it: ^3.0.0+1
+  # provider
+  provider: ^3.2.0
+  # provider architecture
+  provider_architecture: ^1.0.3
 
 
 
