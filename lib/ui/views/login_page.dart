@@ -1,20 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_app/Screens/home_page.dart';
+import 'package:flutter_app/ui/views/home_page.dart';
 import 'package:flutter_app/constants/route_names.dart';
 import 'package:flutter_app/locator.dart';
 import 'package:flutter_app/services/navigation_service.dart';
 import 'package:flutter_app/themes/elab-themes.dart';
+import 'package:flutter_app/viewmodels/login_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/CustomIcons.dart';
-import 'package:flutter_app/Screens/profile.dart';
+import 'package:flutter_app/viewmodels/profile_update.dart';
 import 'package:flutter_app/Widgets/SocialIcons.dart';
 import 'package:flutter_app/auth0.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider_architecture/viewmodel_provider.dart';
 
 bool _signUpActive = false;
 bool _signInActive = true;
@@ -83,7 +85,13 @@ class _LogInPageState extends StateMVC<LogInPage> {
     ScreenUtil.instance =
     ScreenUtil(width: 750, height: 1304, allowFontScaling: true)
       ..init(context);
-    return Column(
+    return ViewModelProvider<LoginViewModel>.withConsumer(
+    viewModel: LoginViewModel(),
+    builder: (context, model, child) => Scaffold(
+    backgroundColor: Colors.white,
+    body: Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 50),
+    child: Column(
       children: <Widget>[
         Container(
           child: Padding(
@@ -167,7 +175,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
           height: ScreenUtil.getInstance().setHeight(778),
         ),
       ],
-    );
+    ))));
   }
 
   Widget _showSignIn(context) {
@@ -248,7 +256,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
               ),
               color: Theme.of(context).buttonColor,
               onPressed: () => Controller.tryToLogInUserViaAuth(
-                  this.auth, _emailController, _passwordController),
+                  this.auth, _emailController.text, _passwordController.text),
             ),
           ),
         ),
@@ -290,7 +298,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
               ),
               color: Theme.of(context).buttonColor,
               onPressed: () => Controller.tryToLogInUserViaAuth(
-                  this.auth, _emailController, _passwordController),
+                  this.auth, _emailController.text, _passwordController.text),
             ),
           ),
         ),
@@ -567,6 +575,6 @@ class Model {
   }
 
   static Future _navigateToProfile(post) async {
-    await _navigationService.navigateTo(HomeViewRoute);
+    await _navigationService.navigateTo(ProfileUpdateRoute);
   }
 }

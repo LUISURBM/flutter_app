@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_app/viewmodels/login_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Objects/user.dart';
-import 'package:flutter_app/Screens/preference_page.dart';
+import 'package:flutter_app/ui/views/preference_page.dart';
+import 'package:provider_architecture/provider_architecture.dart';
 
-import 'login_page.dart';
+import '../ui/views/login_page.dart';
 
 class Profile extends StatelessWidget {
   final User user = User();
@@ -14,7 +16,9 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ViewModelProvider<LoginViewModel>.withConsumer(
+    viewModel: LoginViewModel(),
+    builder: (context, model, child) => MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme
@@ -57,7 +61,7 @@ class Profile extends StatelessWidget {
             ),
         ),
       ),
-    );
+    ));
   }
 
   /** _displayUserData(profileData) {
