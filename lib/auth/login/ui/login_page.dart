@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_app/model.dart';
+import 'package:flutter_app/ui/cutom_styles.dart';
 import 'package:flutter_app/ui/views/home_page.dart';
 import 'package:flutter_app/constants/route_names.dart';
 import 'package:flutter_app/locator.dart';
@@ -18,15 +20,13 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider_architecture/viewmodel_provider.dart';
 
-bool _signUpActive = false;
-bool _signInActive = true;
+
 var facebookLogin = FacebookLogin();
 TextEditingController _emailController = TextEditingController();
 TextEditingController _passwordController = TextEditingController();
 TextEditingController _newEmailController = TextEditingController();
 TextEditingController _newPasswordController = TextEditingController();
-final String clientId = 'cBY3NoyadShF1Uj5tCur8o7dNz6EkBhr';
-final String domain = 'dev-qpdshbe4.auth0.com';
+
 enum MyThemeKeys { SELF, ALT }
 
 Future<Post> fetchPost() async {
@@ -65,14 +65,12 @@ class Post {
 
 class _LogInPageState extends StateMVC<LogInPage> {
   _LogInPageState() : super(Controller());
-  Auth0 auth;
 
   // For CircularProgressIndicator.
   bool visible = false;
 
   @override
   void initState() {
-    auth = Auth0(baseUrl: 'https://$domain/', clientId: clientId);
   }
 
   @override
@@ -88,7 +86,8 @@ class _LogInPageState extends StateMVC<LogInPage> {
     return ViewModelProvider<LoginViewModel>.withConsumer(
     viewModel: LoginViewModel(),
     builder: (context, model, child) => Scaffold(
-    backgroundColor: Colors.white,
+    resizeToAvoidBottomInset: false,
+    backgroundColor: Theme.of(context).backgroundColor,
     body: Padding(
     padding: const EdgeInsets.symmetric(horizontal: 50),
     child: Column(
@@ -130,7 +129,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                       style: BorderStyle.none,
                     ),
                     child: new Text(Controller.displaySignInMenuButton,
-                        style: _signInActive
+                        style: true
                             ? TextStyle(
                             fontSize: 22,
                             color: Theme.of(context).accentColor,
@@ -147,7 +146,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                       style: BorderStyle.none,
                     ),
                     child: Text(Controller.displaySignUpMenuButton,
-                        style: _signUpActive
+                        style: true
                             ? TextStyle(
                             fontSize: 22,
                             color: Theme.of(context).accentColor,
@@ -170,7 +169,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
         Container(
           child: Padding(
               padding: EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _signInActive ? _showSignIn(context) : _showSignUp()),
+              child: true ? _showSignIn(context) : _showSignUp()),
           width: ScreenUtil.getInstance().setWidth(750),
           height: ScreenUtil.getInstance().setHeight(778),
         ),
@@ -254,9 +253,9 @@ class _LogInPageState extends StateMVC<LogInPage> {
                   )
                 ],
               ),
-              color: Theme.of(context).buttonColor,
+              color: Theme.of(context).accentColor,
               onPressed: () => Controller.tryToLogInUserViaAuth(
-                  this.auth, _emailController.text, _passwordController.text),
+                  _emailController.text, _passwordController.text),
             ),
           ),
         ),
@@ -282,28 +281,6 @@ class _LogInPageState extends StateMVC<LogInPage> {
         ),
         Container(
           child: Padding(
-            padding: EdgeInsets.only(),
-            child: RaisedButton(
-              child: Row(
-                children: <Widget>[
-                  SocialIcon(iconData: CustomIcons.facebook),
-                  Expanded(
-                    child: Text(
-                      Controller.displaySignInAuth0Button,
-                      textAlign: TextAlign.center,
-                      style: CustomTextStyle.button(context),
-                    ),
-                  )
-                ],
-              ),
-              color: Theme.of(context).buttonColor,
-              onPressed: () => Controller.tryToLogInUserViaAuth(
-                  this.auth, _emailController.text, _passwordController.text),
-            ),
-          ),
-        ),
-        Container(
-          child: Padding(
               padding: EdgeInsets.only(),
               child: RaisedButton(
                 child: Row(
@@ -323,7 +300,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                   setState(() {
                     visible = true;
                   });
-                  Controller.tryToLogInUserViaFacebook(this.auth, context);
+                  Controller.tryToLogInUserViaFacebook(context);
                 },
               )),
         ),
@@ -421,160 +398,4 @@ class LogInPage extends StatefulWidget {
   @protected
   @override
   State<StatefulWidget> createState() => _LogInPageState();
-}
-
-class Controller extends ControllerMVC {
-  /// Singleton Factory
-  factory Controller() {
-    if (_this == null) _this = Controller._();
-    return _this;
-  }
-
-  static Controller _this;
-
-  Controller._();
-
-  /// Allow for easy access to 'the Controller' throughout the application.
-  static Controller get con => _this;
-
-  /// The Controller doesn't know any values or methods. It simply handles the communication between the view and the model.
-
-  static String get displayLogoTitle => Model._logoTitle;
-
-  static String get displayLogoSubTitle => Model._logoSubTitle;
-
-  static String get displaySignUpMenuButton => Model._signUpMenuButton;
-
-  static String get displaySignInMenuButton => Model._signInMenuButton;
-
-  static String get displayHintTextEmail => Model._hintTextEmail;
-
-  static String get displayHintTextPassword => Model._hintTextPassword;
-
-  static String get displayHintTextNewEmail => Model._hintTextNewEmail;
-
-  static String get displayHintTextNewPassword => Model._hintTextNewPassword;
-
-  static String get displaySignUpButtonTest => Model._signUpButtonText;
-
-  static String get displaySignInAuth0Button =>
-      Model._signInWithAuth0ButtonText;
-
-  static String get displaySignInEmailButton =>
-      Model._signInWithEmailButtonText;
-
-  static String get displaySignInFacebookButton =>
-      Model._signInWithFacebookButtonText;
-
-  static String get displaySeparatorText =>
-      Model._alternativeLogInSeparatorText;
-
-  static String get displayErrorEmailLogIn => Model._emailLogInFailed;
-
-  static void changeToSignUp() => Model._changeToSignUp();
-
-  static void changeToSignIn() => Model._changeToSignIn();
-
-  static Future<Post> signInWithAuth(Auth0 auth, email, password) =>
-      Model._signInWithAuth(auth, email, password);
-
-  static Future<Post> signInWithFacebook(Auth0 auth, context) =>
-      Model._signInWithFacebook(auth, context);
-
-  static Future navigateToProfile(post) =>
-      Model._navigateToProfile(post);
-
-  static Future tryToLogInUserViaAuth(
-      Auth0 auth, email, password) async {
-    Post post = await signInWithAuth(auth, email, password);
-    if (post != null) {
-      navigateToProfile(post);
-    }
-  }
-
-  static Future tryToLogInUserViaFacebook(Auth0 auth, context) async {
-    Post post = await signInWithFacebook(auth, context);
-    if (post != null) {
-      navigateToProfile(post);
-    }
-  }
-
-  static Future tryToSignUpWithEmail(email, password) async {
-    if (await tryToSignUpWithEmail(email, password) == true) {
-      //TODO Display success message or go to Login screen
-    } else {
-      //TODO Display error message and stay put.
-    }
-  }
-}
-
-class Model {
-  static final NavigationService _navigationService = locator<NavigationService>();
-
-  static String _logoTitle = "Elab Mobile";
-  static String _logoSubTitle = "OnGo Technologies";
-  static String _signInMenuButton = "SIGN IN";
-  static String _signUpMenuButton = "SIGN UP";
-  static String _hintTextEmail = "Email";
-  static String _hintTextPassword = "Password";
-  static String _hintTextNewEmail = "Enter your Email";
-  static String _hintTextNewPassword = "Enter a Password";
-  static String _signUpButtonText = "SIGN UP";
-  static String _signInWithAuth0ButtonText = "Sign in with Auth";
-  static String _signInWithEmailButtonText = "Sign in with Email";
-  static String _signInWithFacebookButtonText = "Sign in with Facebook";
-  static String _alternativeLogInSeparatorText = "or";
-  static String _emailLogInFailed =
-      "Email or Password was incorrect. Please try again";
-
-  static void _changeToSignUp() {
-    _signUpActive = true;
-    _signInActive = false;
-  }
-
-  static void _changeToSignIn() {
-    _signUpActive = false;
-    _signInActive = true;
-  }
-
-  static Future<Post> _signInWithAuth(Auth0 auth, String email, String password) async {
-    Post post = new Post();
-    try {
-      var response = await auth.auth.passwordRealm({
-        'username': email.trim().toLowerCase(),
-        'password': password,
-        'realm': 'Username-Password-Authentication'
-      });
-      post.email = 'luiz-felipe16@hotmail.com';
-      post.token = response['access_token'];
-    } catch (e) {
-      print(e);
-    }
-    return post;
-  }
-
-  static Future<Post> _signInWithFacebook(Auth0 auth, context) async {
-    Post post = await fetchPost();
-    try {
-      var response = await auth.auth.passwordRealm({
-        'username': 'luiz-felipe16@hotmail.com',
-        'password': '20auth.0129.',
-        'realm': 'Username-Password-Authentication'
-      });
-      post.token = response['access_token'];
-    } catch (e) {
-      print(e);
-    }
-    if (post != null) {
-      print('Successfully signed in with Facebook. ');
-      return post;
-    } else {
-      print('Failed to sign in with Facebook. ');
-      return null;
-    }
-  }
-
-  static Future _navigateToProfile(post) async {
-    await _navigationService.navigateTo(ProfileUpdateRoute);
-  }
 }

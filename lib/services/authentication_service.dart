@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_app/ui/views/login_page.dart';
+import 'package:flutter_app/model.dart';
+import 'package:flutter_app/auth/login/ui/login_page.dart';
 import 'package:flutter_app/auth0.dart';
 
 final String clientId = 'cBY3NoyadShF1Uj5tCur8o7dNz6EkBhr';
@@ -14,7 +15,6 @@ class AuthenticationService {
   }) async {
     try {
       var user = await Controller.tryToLogInUserViaAuth(
-        auth,
         email,
         password,
       );

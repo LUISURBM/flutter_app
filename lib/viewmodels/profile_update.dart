@@ -6,7 +6,7 @@ import 'package:flutter_app/Objects/user.dart';
 import 'package:flutter_app/ui/views/preference_page.dart';
 import 'package:provider_architecture/provider_architecture.dart';
 
-import '../ui/views/login_page.dart';
+import '../auth/login/ui/login_page.dart';
 
 class Profile extends StatelessWidget {
   final User user = User();
@@ -49,12 +49,12 @@ class Profile extends StatelessWidget {
               child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("Name: " + user.name.toString()),
-                  Text("Email: " + post.email.toString()),
-                  Text("Facebook ID: " + user.fbID.toString()),
-                  Text("Picture url: "+ user.url.toString()),
-                  Text("Post title: "+ post.title.toString()),
-                  Text("Post token: "+ post.token.toString()),
+                  Text("Name: " + user.name),
+                  Text("Email: " + post.email),
+                  Text("Facebook ID: " + user.fbID),
+                  Text("Picture url: "+ user.url),
+                  Text("Post title: "+ post.title),
+                  Text("Post token: "+ post.token),
                 ],
               )
               //child: _displayUserData(user.profileData),
