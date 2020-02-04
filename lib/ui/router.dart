@@ -1,9 +1,9 @@
+import 'package:flutter_app/auth/login/ui/login_view.dart';
 import 'package:flutter_app/ui/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/constants/route_names.dart';
-import 'package:flutter_app/ui/views/login_view.dart';
-import 'package:flutter_app/ui/views/profile_update.dart';
 import 'package:flutter_app/ui/views/signup_view.dart';
+import 'package:flutter_app/viewmodels/profile_update.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {

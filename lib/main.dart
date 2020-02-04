@@ -1,13 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/ui/views/login_page.dart';
+import 'package:flutter_app/auth/login/ui/login_page.dart';
 import 'package:flutter_app/locator.dart';
 import 'package:flutter_app/managers/dialog_manager.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/themes/elab-themes.dart';
 import 'package:flutter_app/ui/router.dart';
 import 'package:flutter_app/services/dialog_service.dart';
 import 'package:flutter_app/services/navigation_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
  @override

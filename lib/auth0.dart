@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_app/env/env-auth.dart';
 import 'package:http/http.dart' as http;
 
 part 'exception/auth_exeption.dart';
@@ -23,11 +24,16 @@ class Auth0 {
 
   Auth0._(this.auth, this.webAuth, this.options);
 
+  static Auth0 init() {
+    final auth = envAuth();
+
+    return Auth0(baseUrl: 'https://dev-qpdshbe4.auth0.com/', clientId: 'cBY3NoyadShF1Uj5tCur8o7dNz6EkBhr');
+  }
   factory Auth0({String baseUrl, String clientId}) {
     assert(baseUrl != null && clientId != null);
     final auth = Auth0Auth(clientId, baseUrl);
     final webAuth = new WebAuth(auth);
-    return Auth0._(auth, webAuth, {'baseUrl': baseUrl, 'clientId': clientId});
+    return Auth0._(auth, webAuth, envAuth);
   }
 
   /*

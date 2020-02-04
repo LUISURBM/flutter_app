@@ -87,28 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class CustomTextStyle {
-  static TextStyle formField(BuildContext context) {
-    return Theme.of(context).textTheme.title;
-  }
-
-  static TextStyle title(BuildContext context) {
-    return Theme.of(context).textTheme.title;
-  }
-
-  static TextStyle subTitle(BuildContext context) {
-    return Theme.of(context).textTheme.title;
-  }
-
-  static TextStyle button(BuildContext context) {
-    return Theme.of(context).textTheme.title;
-  }
-
-  static TextStyle body(BuildContext context) {
-    return Theme.of(context).textTheme.title;
-  }
-}
-
 class CustomTheme extends StatefulWidget {
   final Widget child;
   final ThemeKeys initialThemeKey;
