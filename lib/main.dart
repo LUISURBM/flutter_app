@@ -1,13 +1,33 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/ui/views/login_page.dart';
 import 'package:flutter_app/locator.dart';
 import 'package:flutter_app/managers/dialog_manager.dart';
-import 'package:flutter_app/themes/doc-theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/themes/elab-themes.dart';
 import 'package:flutter_app/ui/router.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/services/dialog_service.dart';
 import 'package:flutter_app/services/navigation_service.dart';
+
+class SimpleBlocDelegate extends BlocDelegate {
+ @override
+  void onEvent(Bloc bloc, Object event) {
+    super.onEvent(bloc, event);
+    print(event);
+  }
+
+  @override
+  void onTransition(Bloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
+    print(transition);
+  }
+
+  @override
+  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
+    super.onError(bloc, error, stacktrace);
+    print(error);
+  }
+}
 
 void main() {
   setupLocator();

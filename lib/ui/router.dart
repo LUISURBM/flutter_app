@@ -2,6 +2,7 @@ import 'package:flutter_app/ui/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/constants/route_names.dart';
 import 'package:flutter_app/ui/views/login_view.dart';
+import 'package:flutter_app/ui/views/profile_update.dart';
 import 'package:flutter_app/ui/views/signup_view.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,6 +21,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: HomeView(),
+      );
+    case ProfileUpdateRoute:
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: Profile(),
       );
     default:
       return MaterialPageRoute(
