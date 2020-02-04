@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_app/ui/views/login_page.dart';
+import 'package:flutter_app/model/post.dart';
 import 'package:flutter_app/viewmodels/login_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';

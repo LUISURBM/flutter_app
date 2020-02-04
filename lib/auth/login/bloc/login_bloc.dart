@@ -34,6 +34,8 @@ class LoginButtonPressed extends LoginEvent {
       'LoginButtonPressed { username: $username, password: $password }';
 }
 
+class LoginStarted extends LoginEvent {}
+
 class LoginInitial extends LoginState {}
 
 class LoginLoading extends LoginState {}
@@ -55,7 +57,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc({
     @required this.authenticationBloc,
-  })  : assert(authenticationBloc != null);
+  });
 
   @override
   LoginState get initialState => LoginInitial();

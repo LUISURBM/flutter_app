@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_app/auth/bloc/authentication_bloc.dart';
+import 'package:flutter_app/auth/login/bloc/login_bloc.dart';
 import 'package:flutter_app/model.dart';
+import 'package:flutter_app/model/post.dart';
 import 'package:flutter_app/ui/cutom_styles.dart';
 import 'package:flutter_app/viewmodels/login_view_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +18,6 @@ import 'package:mvc_pattern/mvc_pattern.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider_architecture/viewmodel_provider.dart';
 
-
 var facebookLogin = FacebookLogin();
 TextEditingController _emailController = TextEditingController();
 TextEditingController _passwordController = TextEditingController();
@@ -25,7 +28,7 @@ enum MyThemeKeys { SELF, ALT }
 
 Future<Post> fetchPost() async {
   final response =
-  await http.get('https://jsonplaceholder.typicode.com/posts/1');
+      await http.get('https://jsonplaceholder.typicode.com/posts/1');
   Post post;
   if (response.statusCode == 200) {
     // Si la llamada al servidor fue exitosa, analiza el JSON
@@ -37,35 +40,16 @@ Future<Post> fetchPost() async {
   return post;
 }
 
-class Post {
-  final int userId;
-  final int id;
-  final String title;
-  final String body;
-  String email;
-  String token;
-
-  Post({this.userId, this.id, this.title, this.body});
-
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
-      body: json['body'],
-    );
-  }
-}
-
 class _LogInPageState extends StateMVC<LogInPage> {
   _LogInPageState() : super(Controller());
 
   // For CircularProgressIndicator.
   bool visible = false;
+  // For Log process.
+  bool logIn = false;
 
   @override
-  void initState() {
-  }
+  void initState() {}
 
   @override
   Widget build(BuildContext context) {
@@ -75,100 +59,104 @@ class _LogInPageState extends StateMVC<LogInPage> {
     ]);
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
-    ScreenUtil(width: 750, height: 1304, allowFontScaling: true)
-      ..init(context);
-    return ViewModelProvider<LoginViewModel>.withConsumer(
-    viewModel: LoginViewModel(),
-    builder: (context, model, child) => Scaffold(
-    resizeToAvoidBottomInset: false,
-    backgroundColor: Theme.of(context).backgroundColor,
-    body: Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 50),
-    child: Column(
-      children: <Widget>[
-        Container(
-          child: Padding(
-              padding: EdgeInsets.only(top: 20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    Controller.displayLogoTitle,
-                    style: CustomTextStyle.title(context),
-                  ),
-                  Text(
-                    Controller.displayLogoSubTitle,
-                    style: CustomTextStyle.subTitle(context),
-                  ),
-                ],
-              )),
-          width: ScreenUtil.getInstance().setWidth(750),
-          height: ScreenUtil.getInstance().setHeight(190),
-        ),
-        SizedBox(
-          height: ScreenUtil.getInstance().setHeight(60),
-        ),
-        Container(
-          child: Padding(
-            padding: EdgeInsets.only(left: 25.0, right: 25.0),
-            child: IntrinsicWidth(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  OutlineButton(
-                    onPressed: () =>
-                        setState(() => Controller.changeToSignIn()),
-                    borderSide: new BorderSide(
-                      style: BorderStyle.none,
+        ScreenUtil(width: 750, height: 1304, allowFontScaling: true)
+          ..init(context);
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: BlocProvider(
+            builder: (context) => LoginBloc(),
+            child: BlocBuilder<LoginBloc, LoginState>(builder: _buildWithLogin)));
+  }
+
+  Widget _buildWithLogin(BuildContext context, LoginState state) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 50),
+        child: BlocProvider<LoginBloc>(
+            builder: (context) => LoginBloc()..dispatch(LoginStarted()),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Padding(
+                      padding: EdgeInsets.only(top: 20.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            Controller.displayLogoTitle,
+                            style: CustomTextStyle.title(context),
+                          ),
+                          Text(
+                            Controller.displayLogoSubTitle,
+                            style: CustomTextStyle.subTitle(context),
+                          ),
+                        ],
+                      )),
+                  width: ScreenUtil.getInstance().setWidth(750),
+                  height: ScreenUtil.getInstance().setHeight(190),
+                ),
+                SizedBox(
+                  height: ScreenUtil.getInstance().setHeight(60),
+                ),
+                Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                    child: IntrinsicWidth(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          OutlineButton(
+                            onPressed: () => setState(() => logIn = true),
+                            borderSide: new BorderSide(
+                              style: BorderStyle.none,
+                            ),
+                            child: new Text(Controller.displaySignInMenuButton,
+                                style: true
+                                    ? TextStyle(
+                                    fontSize: 22,
+                                    color: Theme.of(context).accentColor,
+                                    fontWeight: FontWeight.bold)
+                                    : TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).accentColor,
+                                    fontWeight: FontWeight.normal)),
+                          ),
+                          OutlineButton(
+                            onPressed: () => setState(() => logIn = false),
+                            borderSide: BorderSide(
+                              style: BorderStyle.none,
+                            ),
+                            child: Text(Controller.displaySignUpMenuButton,
+                                style: true
+                                    ? TextStyle(
+                                    fontSize: 22,
+                                    color: Theme.of(context).accentColor,
+                                    fontWeight: FontWeight.bold)
+                                    : TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).accentColor,
+                                    fontWeight: FontWeight.normal)),
+                          )
+                        ],
+                      ),
                     ),
-                    child: new Text(Controller.displaySignInMenuButton,
-                        style: true
-                            ? TextStyle(
-                            fontSize: 22,
-                            color: Theme.of(context).accentColor,
-                            fontWeight: FontWeight.bold)
-                            : TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).accentColor,
-                            fontWeight: FontWeight.normal)),
                   ),
-                  OutlineButton(
-                    onPressed: () =>
-                        setState(() => Controller.changeToSignUp()),
-                    borderSide: BorderSide(
-                      style: BorderStyle.none,
-                    ),
-                    child: Text(Controller.displaySignUpMenuButton,
-                        style: true
-                            ? TextStyle(
-                            fontSize: 22,
-                            color: Theme.of(context).accentColor,
-                            fontWeight: FontWeight.bold)
-                            : TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).accentColor,
-                            fontWeight: FontWeight.normal)),
-                  )
-                ],
-              ),
-            ),
-          ),
-          width: ScreenUtil.getInstance().setWidth(750),
-          height: ScreenUtil.getInstance().setHeight(170),
-        ),
-        SizedBox(
-          height: ScreenUtil.getInstance().setHeight(10),
-        ),
-        Container(
-          child: Padding(
-              padding: EdgeInsets.only(left: 30.0, right: 30.0),
-              child: true ? _showSignIn(context) : _showSignUp()),
-          width: ScreenUtil.getInstance().setWidth(750),
-          height: ScreenUtil.getInstance().setHeight(778),
-        ),
-      ],
-    ))));
+                  width: ScreenUtil.getInstance().setWidth(750),
+                  height: ScreenUtil.getInstance().setHeight(170),
+                ),
+                SizedBox(
+                  height: ScreenUtil.getInstance().setHeight(10),
+                ),
+                Container(
+                  child: Padding(
+                      padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                      child: logIn ? _showSignIn(context) : _showSignUp()),
+                  width: ScreenUtil.getInstance().setWidth(750),
+                  height: ScreenUtil.getInstance().setHeight(778),
+                ),
+              ],
+            )));
   }
 
   Widget _showSignIn(context) {
@@ -223,7 +211,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                     borderSide: BorderSide(
                         color: Theme.of(context).accentColor, width: 1.0)),
                 prefixIcon:
-                Icon(Icons.lock, color: Theme.of(context).accentColor),
+                    Icon(Icons.lock, color: Theme.of(context).accentColor),
               ),
             ),
           ),
@@ -248,8 +236,12 @@ class _LogInPageState extends StateMVC<LogInPage> {
                 ],
               ),
               color: Theme.of(context).accentColor,
-              onPressed: () => Controller.tryToLogInUserViaAuth(
-                  _emailController.text, _passwordController.text),
+              onPressed: () => BlocProvider.of<LoginBloc>(context).dispatch(
+                LoginButtonPressed(
+                  username: _emailController.text,
+                  password: _passwordController.text,
+                ),
+              ),
             ),
           ),
         ),
@@ -375,13 +367,13 @@ class _LogInPageState extends StateMVC<LogInPage> {
   }
 
   Widget horizontalLine() => Padding(
-    padding: EdgeInsets.symmetric(horizontal: 16.0),
-    child: Container(
-      width: ScreenUtil.getInstance().setWidth(120),
-      height: 1.0,
-      color: Theme.of(context).accentColor,
-    ),
-  );
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Container(
+          width: ScreenUtil.getInstance().setWidth(120),
+          height: 1.0,
+          color: Theme.of(context).accentColor,
+        ),
+      );
 
   Widget emailErrorText() => Text(Controller.displayErrorEmailLogIn);
 }

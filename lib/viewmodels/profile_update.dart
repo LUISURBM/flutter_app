@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_app/model/post.dart';
 import 'package:flutter_app/viewmodels/login_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -6,11 +7,10 @@ import 'package:flutter_app/Objects/user.dart';
 import 'package:flutter_app/ui/views/preference_page.dart';
 import 'package:provider_architecture/provider_architecture.dart';
 
-import '../auth/login/ui/login_page.dart';
 
 class Profile extends StatelessWidget {
   final User user = User();
-  final Post post;
+  Post post;
 
   Profile({Key key, @required this.post}) : super(key: key);
 
@@ -49,12 +49,12 @@ class Profile extends StatelessWidget {
               child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("Name: " + user.name),
-                  Text("Email: " + post.email),
-                  Text("Facebook ID: " + user.fbID),
-                  Text("Picture url: "+ user.url),
-                  Text("Post title: "+ post.title),
-                  Text("Post token: "+ post.token),
+                  Text("Name: " ),
+                  Text("Email: " ),
+                  Text("Facebook ID: " ),
+                  Text("Picture url: "),
+                  Text("Post title: "),
+                  Text("Post token: "),
                 ],
               )
               //child: _displayUserData(user.profileData),

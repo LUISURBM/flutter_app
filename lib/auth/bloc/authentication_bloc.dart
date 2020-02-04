@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 
-
 abstract class AuthenticationEvent extends Equatable {
   AuthenticationEvent();
 
@@ -28,7 +27,6 @@ class LoggedIn extends AuthenticationEvent {
 
 class LoggedOut extends AuthenticationEvent {}
 
-
 abstract class AuthenticationState extends Equatable {
   @override
   List<Object> get props => [];
@@ -44,7 +42,6 @@ class AuthenticationLoading extends AuthenticationState {}
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-
   AuthenticationBloc();
 
   @override

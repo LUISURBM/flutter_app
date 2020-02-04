@@ -1,8 +1,10 @@
 import 'package:flutter_app/auth0.dart';
 import 'package:flutter_app/constants/route_names.dart';
 import 'package:flutter_app/locator.dart';
+import 'package:flutter_app/model/post.dart';
 import 'package:flutter_app/services/navigation_service.dart';
 import 'package:flutter_app/auth/login/ui/login_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 
@@ -163,6 +165,7 @@ class Model {
   }
 
   static Future _navigateToProfile(post) async {
-    await _navigationService.navigateTo(ProfileUpdateRoute);
+    await _navigationService.navigateTo(ProfileUpdateRoute, arguments: post);
   }
+
 }
