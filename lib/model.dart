@@ -4,7 +4,6 @@ import 'package:flutter_app/locator.dart';
 import 'package:flutter_app/model/post.dart';
 import 'package:flutter_app/services/navigation_service.dart';
 import 'package:flutter_app/auth/login/ui/login_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 
@@ -56,10 +55,6 @@ class Controller extends ControllerMVC {
 
   static String get displayErrorEmailLogIn => Model._emailLogInFailed;
 
-  static void changeToSignUp() => Model._changeToSignUp();
-
-  static void changeToSignIn() => Model._changeToSignIn();
-
   static Future<Post> signInWithAuth(email, password) =>
       Model._signInWithAuth(email, password);
 
@@ -94,10 +89,7 @@ class Controller extends ControllerMVC {
 }
 
 
-
 class Model {
-  static bool _signUpActive = false;
-  static bool _signInActive = true;
 
   static final NavigationService _navigationService = locator<NavigationService>();
 
@@ -116,16 +108,6 @@ class Model {
   static String _alternativeLogInSeparatorText = "or";
   static String _emailLogInFailed =
       "Email or Password was incorrect. Please try again";
-
-  static void _changeToSignUp() {
-    _signUpActive = true;
-    _signInActive = false;
-  }
-
-  static void _changeToSignIn() {
-    _signUpActive = false;
-    _signInActive = true;
-  }
 
   static Future<Post> _signInWithAuth(String email, String password) async {
     Post post = new Post();
