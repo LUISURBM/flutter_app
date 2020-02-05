@@ -63,7 +63,6 @@ class _LogInPageState extends StateMVC<LogInPage> {
           ..init(context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Theme.of(context).backgroundColor,
         body: BlocProvider(
             builder: (context) => LoginBloc(),
             child: BlocBuilder<LoginBloc, LoginState>(builder: _buildWithLogin)));
@@ -112,7 +111,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                               style: BorderStyle.none,
                             ),
                             child: new Text(Controller.displaySignInMenuButton,
-                                style: true
+                                style: logIn
                                     ? TextStyle(
                                     fontSize: 22,
                                     color: Theme.of(context).accentColor,
@@ -128,7 +127,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                               style: BorderStyle.none,
                             ),
                             child: Text(Controller.displaySignUpMenuButton,
-                                style: true
+                                style: !logIn
                                     ? TextStyle(
                                     fontSize: 22,
                                     color: Theme.of(context).accentColor,
