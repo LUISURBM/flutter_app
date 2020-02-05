@@ -10,6 +10,19 @@ class PreferencePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Preferences'),
+        flexibleSpace: Container(
+          decoration: new BoxDecoration(
+            gradient: new LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.secondary,
+                ],
+                begin: const FractionalOffset(0.0, 0.0),
+                end: const FractionalOffset(1.0, 0.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
+        ),
       ),
       body: ListView.builder(
         padding: EdgeInsets.all(8),

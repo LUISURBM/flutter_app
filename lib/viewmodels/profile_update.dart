@@ -10,7 +10,7 @@ import 'package:provider_architecture/provider_architecture.dart';
 
 class Profile extends StatelessWidget {
   final User user = User();
-  Post post;
+  final Post post;
 
   Profile({Key key, @required this.post}) : super(key: key);
 
@@ -18,23 +18,33 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelProvider<LoginViewModel>.withConsumer(
     viewModel: LoginViewModel(),
-    builder: (context, model, child) => MaterialApp(
-      home: Scaffold(
+    builder: (context, model, child) => Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme
-              .of(context)
-              .accentColor,
           title: Text("Profile :"),
+          flexibleSpace: Container(
+            decoration: new BoxDecoration(
+              gradient: new LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.secondary,
+                  ],
+                  begin: const FractionalOffset(0.0, 0.0),
+                  end: const FractionalOffset(1.0, 0.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp),
+            ),
+          ),
           actions: <Widget>[
             IconButton(
               icon: Icon(
                 Icons.exit_to_app,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.error,
               ),
               onPressed: () => Navigator.pop(context),
             ),
             IconButton(
               icon: Icon(Icons.settings),
+              color: Theme.of(context).colorScheme.primary,
               onPressed: () {
                 // Navigate to the PreferencePage
                 Navigator.of(context).push(MaterialPageRoute(
@@ -60,7 +70,6 @@ class Profile extends StatelessWidget {
               //child: _displayUserData(user.profileData),
             ),
         ),
-      ),
     ));
   }
 
