@@ -64,8 +64,20 @@ class _LogInPageState extends StateMVC<LogInPage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: BlocProvider(
-            builder: (context) => LoginBloc(),
-            child: BlocBuilder<LoginBloc, LoginState>(builder: _buildWithLogin)));
+            builder: (context) => LoginBloc(authenticationBloc: BlocProvider.of<AuthenticationBloc>(context)),
+            child: BlocListener<LoginBloc, LoginState>(
+                listener: (context, state) {
+                  if (state is LoginFailure) {
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${state.error}'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+                child: BlocBuilder<LoginBloc, LoginState>(
+                    builder: _buildWithLogin))));
   }
 
   Widget _buildWithLogin(BuildContext context, LoginState state) {
@@ -92,7 +104,7 @@ class _LogInPageState extends StateMVC<LogInPage> {
                         ],
                       )),
                   width: ScreenUtil.getInstance().setWidth(750),
-                  height: ScreenUtil.getInstance().setHeight(190),
+                  height: ScreenUtil.getInstance().setHeight(230),
                 ),
                 SizedBox(
                   height: ScreenUtil.getInstance().setHeight(60),
@@ -113,13 +125,13 @@ class _LogInPageState extends StateMVC<LogInPage> {
                             child: new Text(Controller.displaySignInMenuButton,
                                 style: logIn
                                     ? TextStyle(
-                                    fontSize: 22,
-                                    color: Theme.of(context).accentColor,
-                                    fontWeight: FontWeight.bold)
+                                        fontSize: 22,
+                                        color: Theme.of(context).accentColor,
+                                        fontWeight: FontWeight.bold)
                                     : TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context).accentColor,
-                                    fontWeight: FontWeight.normal)),
+                                        fontSize: 16,
+                                        color: Theme.of(context).accentColor,
+                                        fontWeight: FontWeight.normal)),
                           ),
                           OutlineButton(
                             onPressed: () => setState(() => logIn = false),
@@ -129,13 +141,13 @@ class _LogInPageState extends StateMVC<LogInPage> {
                             child: Text(Controller.displaySignUpMenuButton,
                                 style: !logIn
                                     ? TextStyle(
-                                    fontSize: 22,
-                                    color: Theme.of(context).accentColor,
-                                    fontWeight: FontWeight.bold)
+                                        fontSize: 22,
+                                        color: Theme.of(context).accentColor,
+                                        fontWeight: FontWeight.bold)
                                     : TextStyle(
-                                    fontSize: 16,
-                                    color: Theme.of(context).accentColor,
-                                    fontWeight: FontWeight.normal)),
+                                        fontSize: 16,
+                                        color: Theme.of(context).accentColor,
+                                        fontWeight: FontWeight.normal)),
                           )
                         ],
                       ),

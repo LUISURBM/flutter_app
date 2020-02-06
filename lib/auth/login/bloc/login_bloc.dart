@@ -57,7 +57,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc({
     @required this.authenticationBloc,
-  });
+  }) : assert(authenticationBloc != null);
 
   @override
   LoginState get initialState => LoginInitial();
@@ -74,7 +74,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           'realm': 'Username-Password-Authentication'
         });
 
-        authenticationBloc.mapEventToState(LoggedIn(token: response['access_token']));
+        authenticationBloc..dispatch(LoggedIn(token: response['access_token']));
         yield LoginInitial();
       } catch (error) {
         yield LoginFailure(error: error.toString());
