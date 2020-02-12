@@ -81,14 +81,14 @@ class _LogInPageState extends StateMVC<LogInPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(
+                          Expanded(child:Text(
                             Controller.displayLogoTitle,
                             style: CustomTextStyle.title(context),
-                          ),
-                          Text(
+                          )),
+                          Expanded(child:Text(
                             Controller.displayLogoSubTitle,
                             style: CustomTextStyle.subTitle(context),
-                          ),
+                          )),
                         ],
                       )),
                   width: ScreenUtil.getInstance().setWidth(750),
@@ -289,12 +289,12 @@ class _LogInPageState extends StateMVC<LogInPage> {
                 },
               )),
         ),
-        Visibility(
+        Expanded(child:Visibility(
             visible: visible,
             child: Container(
                 margin: EdgeInsets.only(bottom: 30),
                 child: CircularProgressIndicator())),
-      ],
+        )],
     );
   }
 
