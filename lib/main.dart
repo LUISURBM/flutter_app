@@ -2,12 +2,15 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/auth/bloc/authentication_bloc.dart';
 import 'package:flutter_app/auth/login/ui/login_page.dart';
+import 'package:flutter_app/common/loading_indicator.dart';
 import 'package:flutter_app/locator.dart';
 import 'package:flutter_app/managers/dialog_manager.dart';
 import 'package:flutter_app/services/dialog_service.dart';
 import 'package:flutter_app/services/navigation_service.dart';
 import 'package:flutter_app/themes/elab-themes.dart';
 import 'package:flutter_app/ui/router.dart';
+import 'package:flutter_app/ui/views/home_page.dart';
+import 'package:flutter_app/ui/views/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
@@ -37,13 +40,11 @@ void main() {
 }
 
 class ElabApp extends StatefulWidget {
-
   ElabApp({Key key}) : super(key: key);
 
   @override
   State<ElabApp> createState() => _MyApp();
 }
-
 
 class _MyApp extends State<ElabApp> {
   AuthenticationBloc authenticationBloc;
@@ -64,8 +65,12 @@ class _MyApp extends State<ElabApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      builder: (context) => ThemeBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ThemeBloc>(builder: (context) => ThemeBloc()),
+        BlocProvider<AuthenticationBloc>(
+            builder: (context) => authenticationBloc)
+      ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: _buildWithTheme,
       ),
@@ -82,10 +87,38 @@ class _MyApp extends State<ElabApp> {
       ),
       navigatorKey: locator<NavigationService>().navigationKey,
       theme: state.themeData,
-      home: BlocProvider<AuthenticationBloc>(
-          builder: (context) => AuthenticationBloc()
-      ..dispatch(AppStarted()),
-      child: LogInPage()),
+      home: WillPopScope(
+          onWillPop: () => showDialog<bool>(
+            context: context,
+            builder: (c) => AlertDialog(
+              title: Text('Warning'),
+              content: Text('Do you really want to exit'),
+              actions: [
+                FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () => Navigator.pop(c, true),
+                ),
+                FlatButton(
+                  child: Text('No'),
+                  onPressed: () => Navigator.pop(c, false),
+                ),
+              ],
+            ),
+          ),
+          child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              if (state is AuthenticationAuthenticated) {
+                return MyHomePage();
+              }
+              if (state is AuthenticationUnauthenticated) {
+                return LogInPage();
+              }
+              if (state is AuthenticationLoading) {
+                return LoadingIndicator();
+              }
+              return SplashPage();
+            },
+          )),
       onGenerateRoute: generateRoute,
     );
   }
