@@ -42,7 +42,6 @@ Future<Post> fetchPost() async {
 
 class _LogInPageState extends StateMVC<LogInPage> {
   _LogInPageState() : super(Controller());
-
   // For CircularProgressIndicator.
   bool visible = false;
   // For Log process.
@@ -64,7 +63,9 @@ class _LogInPageState extends StateMVC<LogInPage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: BlocProvider(
-            builder: (context) => LoginBloc(authenticationBloc: BlocProvider.of<AuthenticationBloc>(context)),
+            builder: (context) => LoginBloc(
+                authenticationBloc:
+                    BlocProvider.of<AuthenticationBloc>(context)),
             child: BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) {
                   if (state is LoginFailure) {
@@ -93,11 +94,13 @@ class _LogInPageState extends StateMVC<LogInPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Expanded(child:Text(
+                          Expanded(
+                              child: Text(
                             Controller.displayLogoTitle,
                             style: CustomTextStyle.title(context),
                           )),
-                          Expanded(child:Text(
+                          Expanded(
+                              child: Text(
                             Controller.displayLogoSubTitle,
                             style: CustomTextStyle.subTitle(context),
                           )),
@@ -294,19 +297,26 @@ class _LogInPageState extends StateMVC<LogInPage> {
                 ),
                 color: Color(0xFF3C5A99),
                 onPressed: () async {
-                  setState(() {
-                    visible = true;
-                  });
-                  Controller.tryToLogInUserViaFacebook(context);
+                  if (!visible) {
+                    setState(() {
+                      visible = true;
+                    });
+                    await Controller.tryToLogInUserViaFacebook(context);
+                    setState(() {
+                      visible = false;
+                    });
+                  }
                 },
               )),
         ),
-        Expanded(child:Visibility(
-            visible: visible,
-            child: Container(
-                margin: EdgeInsets.only(bottom: 30),
-                child: CircularProgressIndicator())),
-        )],
+        Expanded(
+          child: Visibility(
+              visible: visible,
+              child: Container(
+                  margin: EdgeInsets.only(bottom: 30),
+                  child: CircularProgressIndicator())),
+        )
+      ],
     );
   }
 

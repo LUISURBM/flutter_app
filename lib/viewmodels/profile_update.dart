@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:flutter_app/model/post.dart';
+import 'package:flutter_app/ui/cutom_styles.dart';
 import 'package:flutter_app/viewmodels/login_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Objects/user.dart';
 import 'package:flutter_app/ui/views/preference_page.dart';
 import 'package:provider_architecture/provider_architecture.dart';
-
 
 class Profile extends StatelessWidget {
   final User user = User();
@@ -17,60 +17,88 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelProvider<LoginViewModel>.withConsumer(
-    viewModel: LoginViewModel(),
-    builder: (context, model, child) => Scaffold(
-        appBar: AppBar(
-          title: Text("Profile :"),
-          flexibleSpace: Container(
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                  colors: [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.secondary,
-                  ],
-                  begin: const FractionalOffset(0.0, 0.0),
-                  end: const FractionalOffset(1.0, 0.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp),
-            ),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.exit_to_app,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            IconButton(
-              icon: Icon(Icons.settings),
-              color: Theme.of(context).colorScheme.primary,
-              onPressed: () {
-                // Navigate to the PreferencePage
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PreferencePage(),
-                ));
-              },
-            )
-          ],
-        ),
-        body: Container(
-          child: Center(
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Name: " ),
-                  Text("Email: " ),
-                  Text("Facebook ID: " ),
-                  Text("Picture url: "),
-                  Text("Post title: "),
-                  Text("Post token: "),
+        viewModel: LoginViewModel(),
+        builder: (context, model, child) => Scaffold(
+              appBar: AppBar(
+                title: Text("Profile :"),
+                flexibleSpace: Container(
+                  decoration: new BoxDecoration(
+                    gradient: new LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).colorScheme.secondary,
+                        ],
+                        begin: const FractionalOffset(0.0, 0.0),
+                        end: const FractionalOffset(1.0, 0.0),
+                        stops: [0.0, 1.0],
+                        tileMode: TileMode.clamp),
+                  ),
+                ),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.exit_to_app,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.settings),
+                    color: Theme.of(context).colorScheme.primary,
+                    onPressed: () {
+                      // Navigate to the PreferencePage
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PreferencePage(),
+                      ));
+                    },
+                  )
                 ],
-              )
-              //child: _displayUserData(user.profileData),
-            ),
-        ),
-    ));
+              ),
+              body: WillPopScope(
+                onWillPop: () => showDialog<bool>(
+                  context: context,
+                  builder: (c) => AlertDialog(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    title: Text(
+                      'Warning',
+                      style: CustomTextStyle.subTitle(context),
+                    ),
+                    content: Text(
+                      'Log out',
+                      style: CustomTextStyle.title(context),
+                    ),
+                    actions: [
+                      FlatButton(
+                        child:
+                            Text('Yes', style: CustomTextStyle.button(context)),
+                        onPressed: () => Navigator.pop(c, true),
+                        color: Theme.of(context).accentColor,
+                      ),
+                      FlatButton(
+                        child:
+                            Text('No', style: CustomTextStyle.button(context)),
+                        onPressed: () => Navigator.pop(c, false),
+                        color: Theme.of(context).accentColor,
+                      ),
+                    ],
+                  ),
+                ),
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Name: "),
+                    Text("Email: "),
+                    Text("Facebook ID: "),
+                    Text("Picture url: "),
+                    Text("Post title: "),
+                    Text("Post token: "),
+                  ],
+                )
+                    //child: _displayUserData(user.profileData),
+                    ),
+              ),
+            ));
   }
 
   /** _displayUserData(profileData) {
@@ -87,7 +115,7 @@ class Profile extends StatelessWidget {
                image: NetworkImage(
                 profileData['picture']['data']['url'],
               ),
-              
+
             ),
           ),
         ),
@@ -182,45 +210,45 @@ class LoginUserState extends State {
     return Scaffold(
         body: SingleChildScrollView(
             child: Center(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text('User Login Form', style: TextStyle(fontSize: 21))),
-                  Divider(),
-                  Container(
-                      width: 280,
-                      padding: EdgeInsets.all(10.0),
-                      child: TextField(
-                        controller: emailController,
-                        autocorrect: true,
-                        decoration: InputDecoration(hintText: 'Enter Your Email Here'),
-                      )),
-                  Container(
-                      width: 280,
-                      padding: EdgeInsets.all(10.0),
-                      child: TextField(
-                        controller: passwordController,
-                        autocorrect: true,
-                        obscureText: true,
-                        decoration:
-                        InputDecoration(hintText: 'Enter Your Password Here'),
-                      )),
-                  RaisedButton(
-                    onPressed: userLogin,
-                    color: Colors.green,
-                    textColor: Colors.white,
-                    padding: EdgeInsets.fromLTRB(9, 9, 9, 9),
-                    child: Text('Click Here To Login'),
-                  ),
-                  Visibility(
-                      visible: visible,
-                      child: Container(
-                          margin: EdgeInsets.only(bottom: 30),
-                          child: CircularProgressIndicator())),
-                ],
-              ),
-            )));
+      child: Column(
+        children: <Widget>[
+          Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text('User Login Form', style: TextStyle(fontSize: 21))),
+          Divider(),
+          Container(
+              width: 280,
+              padding: EdgeInsets.all(10.0),
+              child: TextField(
+                controller: emailController,
+                autocorrect: true,
+                decoration: InputDecoration(hintText: 'Enter Your Email Here'),
+              )),
+          Container(
+              width: 280,
+              padding: EdgeInsets.all(10.0),
+              child: TextField(
+                controller: passwordController,
+                autocorrect: true,
+                obscureText: true,
+                decoration:
+                    InputDecoration(hintText: 'Enter Your Password Here'),
+              )),
+          RaisedButton(
+            onPressed: userLogin,
+            color: Colors.green,
+            textColor: Colors.white,
+            padding: EdgeInsets.fromLTRB(9, 9, 9, 9),
+            child: Text('Click Here To Login'),
+          ),
+          Visibility(
+              visible: visible,
+              child: Container(
+                  margin: EdgeInsets.only(bottom: 30),
+                  child: CircularProgressIndicator())),
+        ],
+      ),
+    )));
   }
 }
 
@@ -245,21 +273,21 @@ class ProfileScreen extends StatelessWidget {
                 automaticallyImplyLeading: false),
             body: Center(
                 child: Column(
-                  children: <Widget>[
-                    Container(
-                        width: 280,
-                        padding: EdgeInsets.all(10.0),
-                        child: Text('Email = ' + '\n' + email,
-                            style: TextStyle(fontSize: 20))),
-                    RaisedButton(
-                      onPressed: () {
-                        logout(context);
-                      },
-                      color: Colors.red,
-                      textColor: Colors.white,
-                      child: Text('Click Here To Logout'),
-                    ),
-                  ],
-                ))));
+              children: <Widget>[
+                Container(
+                    width: 280,
+                    padding: EdgeInsets.all(10.0),
+                    child: Text('Email = ' + '\n' + email,
+                        style: TextStyle(fontSize: 20))),
+                RaisedButton(
+                  onPressed: () {
+                    logout(context);
+                  },
+                  color: Colors.red,
+                  textColor: Colors.white,
+                  child: Text('Click Here To Logout'),
+                ),
+              ],
+            ))));
   }
 }
