@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'package:flutter_app/model.dart';
 import 'package:flutter_app/model/post.dart';
 import 'package:flutter_app/ui/cutom_styles.dart';
 import 'package:flutter_app/viewmodels/login_view_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Objects/user.dart';
+import 'package:flutter_app/common/navigation_bloc.dart';
 import 'package:flutter_app/ui/views/preference_page.dart';
 import 'package:provider_architecture/provider_architecture.dart';
 
@@ -40,7 +43,7 @@ class Profile extends StatelessWidget {
                       Icons.exit_to_app,
                       color: Theme.of(context).colorScheme.error,
                     ),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Controller.tryToLogOut(),
                   ),
                   IconButton(
                     icon: Icon(Icons.settings),

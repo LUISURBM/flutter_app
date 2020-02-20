@@ -64,6 +64,9 @@ class Controller extends ControllerMVC {
   static Future navigateToProfile(post) =>
       Model._navigateToProfile(post);
 
+  static Future navigateTo(route) =>
+      Model._navigateTo(route);
+
   static Future tryToLogInUserViaAuth(
       email, password) async {
     Post post = await signInWithAuth(email, password);
@@ -85,6 +88,10 @@ class Controller extends ControllerMVC {
     } else {
       //TODO Display error message and stay put.
     }
+  }
+
+  static Future tryToLogOut() async {
+    navigateTo(LoginPageRoute);
   }
 }
 
@@ -148,6 +155,9 @@ class Model {
 
   static Future _navigateToProfile(post) async {
     await _navigationService.navigateTo(ProfileUpdateRoute, arguments: post);
+  }
+  static Future _navigateTo(route) async {
+    await _navigationService.navigateTo(route);
   }
 
 }

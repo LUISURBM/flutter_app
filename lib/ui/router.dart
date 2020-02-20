@@ -1,3 +1,4 @@
+import 'package:flutter_app/auth/login/ui/login_page.dart';
 import 'package:flutter_app/auth/login/ui/login_view.dart';
 import 'package:flutter_app/ui/views/home_view.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name,
         viewToShow: LoginView(),
+      );
+    case LoginPageRoute:
+      return _getPageRoute(
+        routeName: settings.name,
+        viewToShow: LogInPage(),
       );
     case SignUpViewRoute:
       return _getPageRoute(

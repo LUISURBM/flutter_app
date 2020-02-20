@@ -1,4 +1,5 @@
 const String LoginViewRoute = "LoginView";
+const String LoginPageRoute = "LoginPage";
 const String SignUpViewRoute = "SignUp";
 const String HomeViewRoute = "HomeView";
 const String ProfileViewRoute = "ProfileView";

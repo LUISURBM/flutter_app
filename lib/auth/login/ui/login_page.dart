@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_app/auth/bloc/authentication_bloc.dart';
 import 'package:flutter_app/auth/login/bloc/login_bloc.dart';
 import 'package:flutter_app/model.dart';
@@ -19,8 +20,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider_architecture/viewmodel_provider.dart';
 
 var facebookLogin = FacebookLogin();
-TextEditingController _emailController = TextEditingController();
-TextEditingController _passwordController = TextEditingController();
+TextEditingController _emailController =
+    TextEditingController(text: "luiz-felipe16@hotmail.com");
+TextEditingController _passwordController =
+    TextEditingController(text: "20auth.0129.");
 TextEditingController _newEmailController = TextEditingController();
 TextEditingController _newPasswordController = TextEditingController();
 
@@ -60,25 +63,43 @@ class _LogInPageState extends StateMVC<LogInPage> {
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1304, allowFontScaling: true)
           ..init(context);
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: BlocProvider(
-            builder: (context) => LoginBloc(
-                authenticationBloc:
-                    BlocProvider.of<AuthenticationBloc>(context)),
-            child: BlocListener<LoginBloc, LoginState>(
-                listener: (context, state) {
-                  if (state is LoginFailure) {
-                    Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${state.error}'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                },
-                child: BlocBuilder<LoginBloc, LoginState>(
-                    builder: _buildWithLogin))));
+    return WillPopScope(
+        onWillPop: () => showDialog<bool>(
+              context: context,
+              builder: (c) => AlertDialog(
+                title: Text('Warning'),
+                content: Text('Do you really want to exit'),
+                actions: [
+                  FlatButton(
+                    child: Text('Yes'),
+                    onPressed: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+                  ),
+                  FlatButton(
+                    child: Text('No'),
+                    onPressed: () => Navigator.pop(c, false),
+                  ),
+                ],
+              ),
+            ),
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: BlocProvider(
+                builder: (context) => LoginBloc(
+                    authenticationBloc:
+                        BlocProvider.of<AuthenticationBloc>(context)),
+                child: BlocListener<LoginBloc, LoginState>(
+                    listener: (context, state) {
+                      if (state is LoginFailure) {
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${state.error}'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                    child: BlocBuilder<LoginBloc, LoginState>(
+                        builder: _buildWithLogin)))));
   }
 
   Widget _buildWithLogin(BuildContext context, LoginState state) {
